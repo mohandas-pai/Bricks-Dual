@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "482940815576",
+    "firebase_url": "https://bricks-dual.firebaseio.com",
+    "project_id": "bricks-dual",
+    "storage_bucket": "bricks-dual.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482940815576:android:47474d2c78ef22dd752fad",
+        "android_client_info": {
+          "package_name": "theamazingappsco.moh.bricksdual"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482940815576-2qk9ujlvm5ccl3n3j3drj1lo160drl3h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9nAG0MZPOgRVAA3Wn3ZrEg8WaLOk9J_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482940815576-2qk9ujlvm5ccl3n3j3drj1lo160drl3h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
