@@ -150,6 +150,7 @@ public class GameActivity2 extends AppCompatActivity {
         btnPlayAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                setScore();
                 Log.d("MD","Going to round three");
                 Intent i = new Intent(getApplicationContext(), GameActivity3.class);
                 i.putExtra("mylist", threeWords);
@@ -158,6 +159,15 @@ public class GameActivity2 extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void setScore() {
+        int totalScore = Integer.parseInt(threeWords.get(5));
+        int currentScore = Integer.parseInt(lblCounter.getText().toString())+2;
+        Log.d("MD","currentScore is "+currentScore);
+        totalScore = totalScore+currentScore;
+        Log.d("MD","totalScore is "+totalScore);
+        threeWords.set(5,""+totalScore);
     }
 
     public String getCards(String input,String Original){

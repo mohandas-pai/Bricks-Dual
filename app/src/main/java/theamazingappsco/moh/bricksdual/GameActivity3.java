@@ -151,9 +151,23 @@ public class GameActivity3 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d("MD","Going to scoreboard");
+                setScore();
+                Intent i = new Intent(getApplicationContext(), ScoreBoard.class);
+                i.putExtra("mylist", threeWords);
+                startActivity(i);
+                finish();
             }
         });
 
+    }
+
+    private void setScore() {
+        int totalScore = Integer.parseInt(threeWords.get(5));
+        int currentScore = Integer.parseInt(lblCounter.getText().toString())+2;
+        Log.d("MD","currentScore is "+currentScore);
+        totalScore = totalScore+currentScore;
+        Log.d("MD","totalScore is "+totalScore);
+        threeWords.set(5,""+totalScore);
     }
 
     public String getCards(String input,String Original){

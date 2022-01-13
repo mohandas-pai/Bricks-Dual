@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,9 +23,11 @@ import java.util.Random;
 public class LobbyActivity extends AppCompatActivity {
 
     Button btnJoin,btnCreate;
-    EditText etJoin,etCreate;
+    EditText etJoin,etCreate,etUsrnm;
+    String userName;
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
+    ArrayList<String> threeWords = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,84 +38,109 @@ public class LobbyActivity extends AppCompatActivity {
         btnCreate = (Button)findViewById(R.id.btnCreateRoom);
         etJoin = (EditText)findViewById(R.id.etJoinRoom);
         etCreate = (EditText)findViewById(R.id.etCreateRoom);
+        etUsrnm = (EditText)findViewById(R.id.etUserName);
 
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String roomId = etCreate.getText().toString();
-                Log.d("MD","Create button clicked with "+roomId);
+                if (usernamePresent()) {
+                    String roomId = etCreate.getText().toString();
+                    Log.d("MD", "Create button clicked with " + roomId);
 
-                mFirebaseDatabase = FirebaseDatabase.getInstance().getReference().child("Games").child(roomId);
-                DatabaseReference newPost = mFirebaseDatabase.push();
+                    mFirebaseDatabase = FirebaseDatabase.getInstance().getReference().child("Games").child(roomId);
+                    DatabaseReference newPost = mFirebaseDatabase.push();
 
-                ArrayList<String> get3words = find3Words();
+                    ArrayList<String> get3words = find3Words();
 
 
-                newPost.child("Game1").setValue(get3words.get(0));
-                newPost.child("Game2").setValue(get3words.get(1));
-                newPost.child("Game3").setValue(get3words.get(2));
+                    newPost.child("Game1").setValue(get3words.get(0));
+                    newPost.child("Game2").setValue(get3words.get(1));
+                    newPost.child("Game3").setValue(get3words.get(2));
+                    get3words.add(roomId);
+                    get3words.add(userName);
 
+
+                    Intent i = new Intent(getApplicationContext(), GameActivity.class);
+                    i.putExtra("mylist", get3words);
+                    startActivity(i);
+                    finish();
+
+                }
             }
         });
 
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String roomId = etJoin.getText().toString();
-                Log.d("MD","Join button clicked with "+roomId);
+                if (usernamePresent()) {
+                    final String roomId = etJoin.getText().toString();
+                    Log.d("MD", "Join button clicked with " + roomId);
 
-                mFirebaseDatabase = FirebaseDatabase.getInstance().getReference().child("Games").child(roomId);
-                Log.d("MD","mFirebaseDatabase is "+mFirebaseDatabase);
+                    mFirebaseDatabase = FirebaseDatabase.getInstance().getReference().child("Games").child(roomId);
+                    Log.d("MD", "mFirebaseDatabase is " + mFirebaseDatabase);
 
-                mFirebaseDatabase.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String Word1, Word2, Word3;
-                        Log.d("MD", "dataSnapshot is " + dataSnapshot);
-                        if(dataSnapshot.exists()) {
-                            HashMap<String, Object> dataMap = (HashMap<String, Object>) dataSnapshot.getValue();
+                    mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String Word1, Word2, Word3;
+                            Log.d("MD", "dataSnapshot is " + dataSnapshot);
+                            if (dataSnapshot.exists()) {
+                                HashMap<String, Object> dataMap = (HashMap<String, Object>) dataSnapshot.getValue();
 
-                            for (String key : dataMap.keySet()) {
+                                for (String key : dataMap.keySet()) {
 
-                                Object data = dataMap.get(key);
+                                    Object data = dataMap.get(key);
 
-                                HashMap<String, Object> userData = (HashMap<String, Object>) data;
-                                ArrayList<String> threeWords = new ArrayList<String>();
+                                    HashMap<String, Object> userData = (HashMap<String, Object>) data;
 
-                                //User mUser = new User((String) userData.get("name"), (int) (long) userData.get("age"));
+                                    //User mUser = new User((String) userData.get("name"), (int) (long) userData.get("age"));
 
-                                Word1 = (String) userData.get("Game1");
-                                Word2 = (String) userData.get("Game2");
-                                Word3 = (String) userData.get("Game3");
+                                    if(userData.get("Game1")!=(null)) {
+                                        Log.d("MD","Came inside if loop");
+                                        Word1 = (String) userData.get("Game1");
+                                        Word2 = (String) userData.get("Game2");
+                                        Word3 = (String) userData.get("Game3");
 
-                                threeWords.add(Word1);
-                                threeWords.add(Word2);
-                                threeWords.add(Word3);
+                                        threeWords.add(Word1);
+                                        threeWords.add(Word2);
+                                        threeWords.add(Word3);
+                                        threeWords.add(roomId);
+                                        threeWords.add(userName);
 
-                                Log.d("MD", "Word1 is " + Word1);
-                                Log.d("MD", "Word2 is " + Word2);
-                                Log.d("MD", "Word3 is " + Word3);
-
+                                        Log.d("MD", "Word1 is " + Word1);
+                                        Log.d("MD", "Word2 is " + Word2);
+                                        Log.d("MD", "Word3 is " + Word3);
+                                    }
+                                }
                                 Intent i = new Intent(getApplicationContext(), GameActivity.class);
                                 i.putExtra("mylist", threeWords);
                                 startActivity(i);
                                 finish();
-
+                            } else {
+                                Log.d("MD", "NO room found");
                             }
-                        }else {
-                            Log.d("MD", "NO room found");
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-                });
+                        }
+                    });
 
+                }
             }
         });
 
+    }
+
+    private boolean usernamePresent() {
+        if(!(etUsrnm.getText().toString().equals(""))){
+            userName = etUsrnm.getText().toString();
+            return true;
+        }
+        Toast.makeText(LobbyActivity.this, "Enter Valid Username",
+                Toast.LENGTH_LONG).show();
+        return false;
     }
 
     private ArrayList<String> find3Words() {

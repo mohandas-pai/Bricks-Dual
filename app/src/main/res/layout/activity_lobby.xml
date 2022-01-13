@@ -47,4 +47,15 @@
         android:layout_above="@+id/btnJoinRoom"
         android:layout_alignEnd="@+id/etCreateRoom"
         android:id="@+id/etJoinRoom" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:hint="Enter username"
+        android:ems="10"
+        android:layout_below="@+id/btnCreateRoom"
+        android:layout_alignStart="@+id/etJoinRoom"
+        android:layout_marginTop="93dp"
+        android:id="@+id/etUserName" />
 </RelativeLayout>
